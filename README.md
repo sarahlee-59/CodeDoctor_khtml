@@ -87,6 +87,8 @@ curl http://localhost:3000/healthz
 }
 ```
 
+---
+
 ### (옵션) POST /feedback - 폐점 제보
 - 입력:
 ```json
@@ -98,9 +100,6 @@ curl http://localhost:3000/healthz
 { "ok": true }
 ```
 ```yaml
-
----
-
 # 2) `.env.sample` 두 개 추가 (5분)
 
 팀원이 키 없이도 구조를 볼 수 있게 **샘플 파일**을 공유하세요.
@@ -125,11 +124,9 @@ curl http://localhost:3000/healthz
 
 > `.gitignore`에 이미 `*.env`가 있다면 OK. 샘플은 커밋하고, 실제 `.env`는 커밋 금지!
 
----
-
 # 3) Kakao coord2addr 키 점검(10건) (10분)
 
-REST 키가 **진짜 살아있는지** 빠르게 확인합니다. (터미널에서 2~3개만 테스트해도 충분)
+REST 키가 진짜 살아있는지 빠르게 확인합니다. (터미널에서 2~3개만 테스트해도 충분)
 
 ```bash
 # 1건 테스트 (경도 x, 위도 y)

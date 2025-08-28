@@ -1,4 +1,6 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
+import Map from "./Map";
+import StoreCard from "./components/StoreCard";
 
 /** Kakao 타입 전역 선언 */
 declare global {
@@ -7,7 +9,7 @@ declare global {
   }
 }
 
-/** API Base URL (예: http://localhost:3000) */
+/** API Base URL */
 const API_BASE = import.meta.env.VITE_API_BASE_URL as string;
 
 /** 타입들 */
@@ -18,9 +20,10 @@ type Store = {
   category_std: "카페" | "마트" | "과일가게" | "디저트" | string;
   lat: number;
   lng: number;
+  hours_json?: any;
 };
 
-/** 아주 심플한 fetch 래퍼 */
+/** API 함수들 */
 async function getJSON<T>(path: string, params?: Record<string, any>): Promise<T> {
   const url = new URL(path, API_BASE);
   if (params) {
@@ -30,6 +33,7 @@ async function getJSON<T>(path: string, params?: Record<string, any>): Promise<T
   if (!res.ok) throw new Error(await res.text());
   return res.json();
 }
+
 async function postJSON<T>(path: string, body: any): Promise<T> {
   const res = await fetch(new URL(path, API_BASE).toString(), {
     method: "POST",
@@ -38,64 +42,6 @@ async function postJSON<T>(path: string, body: any): Promise<T> {
   });
   if (!res.ok) throw new Error(await res.text());
   return res.json();
-}
-
-/** 지도 컴포넌트 (동일 파일 내부에 정의) */
-function MapView({
-  start,
-  stops,
-  path,
-}: {
-  start?: LatLng;
-  stops?: Store[];
-  path?: LatLng[];
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const { kakao } = window;
-    if (!kakao?.maps) return;
-
-    const center = start
-      ? new kakao.maps.LatLng(start.lat, start.lng)
-      : new kakao.maps.LatLng(37.58, 127.04);
-
-    const map = new kakao.maps.Map(ref.current, { center, level: 4 });
-
-    // 시작점 마커
-    if (start) {
-      const pos = new kakao.maps.LatLng(start.lat, start.lng);
-      const m = new kakao.maps.Marker({ position: pos });
-      m.setMap(map);
-      new kakao.maps.InfoWindow({ content: `<div style="padding:2px">START</div>` }).open(map, m);
-    }
-
-    // 정거장 마커
-    (stops ?? []).forEach((s, i) => {
-      const pos = new kakao.maps.LatLng(s.lat, s.lng);
-      const m = new kakao.maps.Marker({ position: pos });
-      m.setMap(map);
-      new kakao.maps.InfoWindow({
-        content: `<div style="padding:2px">${i + 1}. ${s.name}</div>`,
-      }).open(map, m);
-    });
-
-    // 경로 선
-    if (path?.length) {
-      const poly = new kakao.maps.Polyline({
-        path: path.map((p) => new kakao.maps.LatLng(p.lat, p.lng)),
-        strokeWeight: 4,
-      });
-      poly.setMap(map);
-
-      const bounds = new kakao.maps.LatLngBounds();
-      path.forEach((p) => bounds.extend(new kakao.maps.LatLng(p.lat, p.lng)));
-      map.setBounds(bounds);
-    }
-  }, [start, stops, path]);
-
-  return <div ref={ref} style={{ height: 420, border: "1px solid #eee", borderRadius: 8 }} />;
 }
 
 export default function App() {
@@ -110,7 +56,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string>("");
 
-  // 현재 위치
+  // 현재 위치 가져오기
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
       (p) => setPos({ lat: p.coords.latitude, lng: p.coords.longitude }),
@@ -118,7 +64,7 @@ export default function App() {
     );
   }, []);
 
-  // 근처 검색
+  // 근처 상점 검색
   async function fetchNearby() {
     if (!pos) return;
     setLoading(true);
@@ -128,7 +74,6 @@ export default function App() {
         lat: pos.lat,
         lng: pos.lng,
         category,
-        k: 10,
       });
       setPlan(null);
       setNearby(data.items);
@@ -168,60 +113,115 @@ export default function App() {
   const list = plan?.stops ?? nearby;
 
   return (
-    <div style={{ padding: 16, maxWidth: 960, margin: "0 auto", fontFamily: "system-ui, sans-serif" }}>
-      <h1 style={{ fontSize: 22, marginBottom: 12 }}>동대문 전통시장 데모</h1>
-
-      <section
-        style={{
-          display: "grid",
-          gap: 8,
-          gridTemplateColumns: "1fr auto auto",
-          alignItems: "center",
-        }}
-      >
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          style={{ padding: 8 }}
-        >
-          <option>카페</option>
-          <option>마트</option>
-          <option>과일가게</option>
-          <option>디저트</option>
-        </select>
-        <button onClick={fetchNearby} disabled={!pos || loading} style={{ padding: "8px 12px", border: "1px solid #ddd" }}>
-          근처 검색
-        </button>
-        <button onClick={makePlan} disabled={!pos || loading} style={{ padding: "8px 12px", border: "1px solid #ddd" }}>
-          경로 생성
-        </button>
-      </section>
-
-      {msg && (
-        <div style={{ marginTop: 8, color: "#c00" }}>
-          {msg}
+    <div className="min-h-screen bg-neutral-bg">
+      {/* 헤더 */}
+      <header className="bg-white shadow-sm border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 py-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-neutral-text">
+                골라먹는 AI시장
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">
+                동대문 전통시장 탐방 가이드
+              </p>
+            </div>
+            
+            <div className="flex items-center space-x-3">
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+              >
+                <option value="카페">카페</option>
+                <option value="마트">마트</option>
+                <option value="과일가게">과일가게</option>
+                <option value="디저트">디저트</option>
+              </select>
+              
+              <button 
+                onClick={fetchNearby} 
+                disabled={!pos || loading}
+                className="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? '검색중...' : '근처 검색'}
+              </button>
+              
+              <button 
+                onClick={makePlan} 
+                disabled={!pos || loading}
+                className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? '계획중...' : '경로 생성'}
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+      </header>
 
-      <div style={{ marginTop: 12 }}>
-        <MapView
-          start={pos ?? undefined}
-          stops={plan ? plan.stops : nearby}
-          path={plan?.path}
-        />
-      </div>
+      {/* 메인 컨텐츠 */}
+      <main className="max-w-6xl mx-auto px-4 py-6">
+        {msg && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+            {msg}
+          </div>
+        )}
 
-      <section style={{ marginTop: 12 }}>
-        <h2 style={{ fontSize: 18, margin: "8px 0" }}>목록</h2>
-        <ul>
-          {list.slice(0, 10).map((s, i) => (
-            <li key={s.id}>
-              {(plan ? `${i + 1}. ` : "")}
-              {s.name} <small>({s.category_std})</small>
-            </li>
-          ))}
-        </ul>
-      </section>
+        {/* 지도 섹션 */}
+        <section className="mb-8">
+          <div className="bg-white rounded-2xl shadow-card p-6">
+            <h2 className="text-xl font-semibold text-neutral-text mb-4">
+              {plan ? '추천 경로' : '주변 상점'}
+            </h2>
+            <Map
+              start={pos ?? undefined}
+              stops={plan ? plan.stops : nearby}
+              path={plan?.path}
+            />
+          </div>
+        </section>
+
+        {/* 상점 리스트 섹션 */}
+        <section>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-semibold text-neutral-text">
+              {plan ? '경로 상점' : '추천 상점'}
+            </h2>
+            {plan && (
+              <span className="text-sm text-gray-600">
+                총 {plan.stops.length}개 상점 방문
+              </span>
+            )}
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {list.slice(0, 9).map((store, index) => (
+              <StoreCard
+                key={store.id}
+                name={plan ? `${index + 1}. ${store.name}` : store.name}
+                category={store.category_std}
+                open_now={true}
+                crowd_level={0.3 + Math.random() * 0.5} // 데모용 랜덤 값
+                distance={plan ? undefined : Math.hypot(pos?.lat ? pos.lat - store.lat : 0, pos?.lng ? pos.lng - store.lng : 0)}
+                onClick={() => {
+                  // 상점 클릭 시 지도에서 해당 위치로 이동하는 로직
+                  console.log('Selected store:', store);
+                }}
+              />
+            ))}
+          </div>
+          
+          {list.length === 0 && !loading && (
+            <div className="text-center py-12 text-gray-500">
+              <svg className="w-16 h-16 mx-auto mb-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+              </svg>
+              <p className="text-lg">검색 결과가 없습니다</p>
+              <p className="text-sm">다른 카테고리로 검색해보세요</p>
+            </div>
+          )}
+        </section>
+      </main>
     </div>
   );
 }

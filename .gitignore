@@ -4,3 +4,6 @@
 node_modules/
 .bin/
 .next/
+
+# seoyeon branch
+CodeDoctor_khtml-seoyeon_branch/

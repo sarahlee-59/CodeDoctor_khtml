@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { fetcher } from "@/lib/fetcher"
 import { Download, MapPin } from "lucide-react"
+import { KakaoMap } from "./KakaoMap"
 
 interface MarketZone {
   id: string
@@ -267,13 +268,13 @@ export function HeatmapTab() {
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             <div className="lg:col-span-3">
-              <div className="h-96 border-2 border-border overflow-hidden bg-muted/20 flex items-center justify-center">
-                <div className="text-center text-muted-foreground">
-                  <MapPin className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">맵 컴포넌트</p>
-                  <p className="text-sm">나중에 서드파티 API로 교체 예정</p>
-                </div>
-              </div>
+              <KakaoMap
+                zones={processedZones}
+                selectedAge={selectedAge}
+                selectedDay={selectedDay}
+                selectedTime={selectedTime}
+                onZoneClick={handleZoneClick}
+              />
             </div>
 
             <div className="space-y-2">

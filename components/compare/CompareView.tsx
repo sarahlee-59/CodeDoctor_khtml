@@ -19,9 +19,8 @@ interface CompareItem {
 interface PriceSeries {
   series: Array<{
     date: string
-    seoulAvg: number
-    martAvg: number
-    ddmMarket: number
+    traditionalMarket: number
+    largeRetail: number
   }>
 }
 
@@ -75,15 +74,56 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
     const loadData = async () => {
       setLoading(true)
       try {
-        const [item, series, offerList] = await Promise.all([
-          fetcher<CompareItem>("/api/compare-item.json"),
-          fetcher<PriceSeries>("/api/compare-series.json"),
-          fetcher<Offer[]>("/api/compare-offers.json"),
-        ])
+        // 실제 가격 데이터 API 사용
+        const priceResponse = await fetch(`/api/price-index-real?product=${selectedItem}&period=1month`)
+        let priceData: PriceSeries | null = null
+        
+        if (priceResponse.ok) {
+          const data = await priceResponse.json()
+          if (data.products && data.products.length > 0) {
+            // API 응답을 PriceSeries 형태로 변환
+            priceData = {
+              series: data.products[0].data.map((item: any) => ({
+                date: item.date,
+                traditionalMarket: item.traditionalMarket,
+                largeRetail: item.largeRetail
+              }))
+            }
+          }
+        }
 
-        setItemData(item)
-        setPriceData(series)
-        setOffers(offerList)
+        // 더미 데이터는 일단 기본값으로 설정
+        const itemData: CompareItem = {
+          name: `${selectedItem} 1포기 특급`,
+          category: "채소류",
+          origin: "국산",
+          grade: "특급",
+          unit: "1포기",
+          images: ["/fresh-cabbage.png"]
+        }
+
+        const offers: Offer[] = [
+          {
+            shop: "동대문종합시장",
+            channel: "전통시장",
+            price: priceData?.series[priceData.series.length - 1]?.traditionalMarket || 3000,
+            ship: 0,
+            onnuriRate: 0.1,
+            distanceKm: 2.5
+          },
+          {
+            shop: "이마트",
+            channel: "대형마트",
+            price: priceData?.series[priceData.series.length - 1]?.largeRetail || 3500,
+            ship: 0,
+            onnuriRate: 0,
+            card: { name: "신세계카드", cashback: 0.02 }
+          }
+        ]
+
+        setItemData(itemData)
+        setPriceData(priceData)
+        setOffers(offers)
       } catch (error) {
         console.error("Failed to load data:", error)
       } finally {

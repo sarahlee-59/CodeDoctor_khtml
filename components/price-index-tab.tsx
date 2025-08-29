@@ -310,7 +310,6 @@ export function PriceIndexTab() {
               </ResponsiveContainer>
             </div>
           ) : (
-            /* Updated table with office styling and structured borders */
             <div className="office-grid grid-cols-1 gap-0">
                              <div className="office-header grid grid-cols-4 gap-0 text-xs font-medium">
                  <div className="px-3 py-2 border-r border-border">날짜</div>

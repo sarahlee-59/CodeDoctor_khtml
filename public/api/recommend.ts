@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const connection = await mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "Muxchk@01033",
+    password: "1258",
     database: "seoyeon_db",
   });
 

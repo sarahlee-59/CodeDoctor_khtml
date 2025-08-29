@@ -85,6 +85,7 @@ export function PriceIndexList() {
 
   // 각 제품별 가격 요약 데이터 로드
   const loadPriceSummaries = async (products: AvailableProduct[]) => {
+
     console.log("🔍 가격 요약 데이터 로딩 시작, 제품 수:", products.length)
     const summaries: { [key: string]: PriceSummary } = {}
     
@@ -100,7 +101,7 @@ export function PriceIndexList() {
             const productData = data.products[0]
             const latest = productData.data[productData.data.length - 1]
             console.log(`🔍 ${product.label} 최신 데이터:`, latest)
-            
+
             const seoulSavings = Math.round(((latest.seoul - latest.dongdaemun) / latest.seoul) * 100)
             const martSavings = Math.round(((latest.mart - latest.dongdaemun) / latest.mart) * 100)
             
@@ -201,6 +202,7 @@ export function PriceIndexList() {
       </div>
     )
   }
+
 
   console.log("🔍 메인 렌더링 시작")
   

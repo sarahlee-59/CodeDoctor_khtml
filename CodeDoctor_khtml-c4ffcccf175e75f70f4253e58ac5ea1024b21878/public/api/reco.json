@@ -1,0 +1,26 @@
+{
+  "shops": [
+    {
+      "id": 1,
+      "name": "신선마트",
+      "category": "채소",
+      "qualityScore": 85,
+      "crowdLevel": 2,
+      "priceAdvantage": 15,
+      "currentAvailability": "보통",
+      "location": "동대문구",
+      "rating": 4.5
+    },
+    {
+      "id": 2,
+      "name": "농산물직판장",
+      "category": "과일",
+      "qualityScore": 90,
+      "crowdLevel": 1,
+      "priceAdvantage": 20,
+      "currentAvailability": "여유",
+      "location": "종로구",
+      "rating": 4.8
+    }
+  ]
+}

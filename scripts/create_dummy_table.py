@@ -58,7 +58,7 @@ print("✅ 지표 계산 완료")
 print("💾 MySQL에 저장 중...")
 try:
     engine = create_engine(
-        "mysql+pymysql://root:Muxchk%4001033@localhost:3306/seoyeon_db?charset=utf8mb4"
+        "mysql+pymysql://root:wogus!204@localhost:3306/seoyeon_db?charset=utf8mb4"
     )
     
     # DB 저장

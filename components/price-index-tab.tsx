@@ -243,8 +243,6 @@ export function PriceIndexTab() {
                   <SelectContent className="rounded-sm">
                     <SelectItem value="1week">1주</SelectItem>
                     <SelectItem value="1month">1개월</SelectItem>
-                    <SelectItem value="3months">3개월</SelectItem>
-                    <SelectItem value="6months">6개월</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -273,7 +271,7 @@ export function PriceIndexTab() {
                     tick={{ fontSize: 12 }}
                     tickFormatter={(value) => {
                       const date = new Date(value)
-                      return `${date.getMonth() + 1}/${date.getDate()}`
+                      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
                     }}
                   />
                   <YAxis tick={{ fontSize: 12 }} tickFormatter={(value) => `${value.toLocaleString()}원`} />

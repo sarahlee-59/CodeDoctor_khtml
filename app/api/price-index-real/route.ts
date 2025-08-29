@@ -24,12 +24,6 @@ export async function GET(request: Request) {
       case "1month":
         limitCount = 30;
         break;
-      case "3months":
-        limitCount = 90;
-        break;
-      case "6months":
-        limitCount = 150;
-        break;
       default:
         limitCount = 30;
     }

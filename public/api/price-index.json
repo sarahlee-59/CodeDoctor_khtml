@@ -1,0 +1,164 @@
+{
+  "products": [
+    {
+      "product": "배추",
+      "data": [
+        {
+          "date": "2025-08-13",
+          "seoul": 3500,
+          "mart": 4200,
+          "dongdaemun": 2800
+        },
+        {
+          "date": "2025-08-14",
+          "seoul": 3600,
+          "mart": 4300,
+          "dongdaemun": 2900
+        },
+        {
+          "date": "2025-08-15",
+          "seoul": 3400,
+          "mart": 4100,
+          "dongdaemun": 2700
+        },
+        {
+          "date": "2025-08-16",
+          "seoul": 3300,
+          "mart": 4000,
+          "dongdaemun": 2600
+        },
+        {
+          "date": "2025-08-17",
+          "seoul": 3200,
+          "mart": 3900,
+          "dongdaemun": 2500
+        },
+        {
+          "date": "2025-08-18",
+          "seoul": 3100,
+          "mart": 3800,
+          "dongdaemun": 2400
+        },
+        {
+          "date": "2025-08-19",
+          "seoul": 3000,
+          "mart": 3700,
+          "dongdaemun": 2300
+        },
+        {
+          "date": "2025-08-20",
+          "seoul": 2900,
+          "mart": 3600,
+          "dongdaemun": 2200
+        }
+      ]
+    },
+    {
+      "product": "달걀",
+      "data": [
+        {
+          "date": "2025-08-13",
+          "seoul": 6500,
+          "mart": 7200,
+          "dongdaemun": 5800
+        },
+        {
+          "date": "2025-08-14",
+          "seoul": 6600,
+          "mart": 7300,
+          "dongdaemun": 5900
+        },
+        {
+          "date": "2025-08-15",
+          "seoul": 6400,
+          "mart": 7100,
+          "dongdaemun": 5700
+        },
+        {
+          "date": "2025-08-16",
+          "seoul": 6300,
+          "mart": 7000,
+          "dongdaemun": 5600
+        },
+        {
+          "date": "2025-08-17",
+          "seoul": 6200,
+          "mart": 6900,
+          "dongdaemun": 5500
+        },
+        {
+          "date": "2025-08-18",
+          "seoul": 6100,
+          "mart": 6800,
+          "dongdaemun": 5400
+        },
+        {
+          "date": "2025-08-19",
+          "seoul": 6000,
+          "mart": 6700,
+          "dongdaemun": 5300
+        },
+        {
+          "date": "2025-08-20",
+          "seoul": 5900,
+          "mart": 6600,
+          "dongdaemun": 5200
+        }
+      ]
+    },
+    {
+      "product": "돼지고기",
+      "data": [
+        {
+          "date": "2025-08-13",
+          "seoul": 15000,
+          "mart": 16500,
+          "dongdaemun": 13500
+        },
+        {
+          "date": "2025-08-14",
+          "seoul": 15200,
+          "mart": 16700,
+          "dongdaemun": 13700
+        },
+        {
+          "date": "2025-08-15",
+          "seoul": 14800,
+          "mart": 16300,
+          "dongdaemun": 13300
+        },
+        {
+          "date": "2025-08-16",
+          "seoul": 14600,
+          "mart": 16100,
+          "dongdaemun": 13100
+        },
+        {
+          "date": "2025-08-17",
+          "seoul": 14400,
+          "mart": 15900,
+          "dongdaemun": 12900
+        },
+        {
+          "date": "2025-08-18",
+          "seoul": 14200,
+          "mart": 15700,
+          "dongdaemun": 12700
+        },
+        {
+          "date": "2025-08-19",
+          "seoul": 14000,
+          "mart": 15500,
+          "dongdaemun": 12500
+        },
+        {
+          "date": "2025-08-20",
+          "seoul": 13800,
+          "mart": 15300,
+          "dongdaemun": 12300
+        }
+      ]
+    }
+  ],
+  "lastUpdated": "2025-08-20"
+}

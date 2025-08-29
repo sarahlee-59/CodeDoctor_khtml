@@ -4,8 +4,9 @@ import { useState, useEffect } from "react"
 import ProductList from "@/components/compare/ProductList"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Search, Grid, List, ChevronDown } from "lucide-react"
+import { Search, Grid, List, ChevronDown, Gift } from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useVoucher } from "@/hooks/use-voucher"
 
 interface Product {
   id: string
@@ -65,6 +66,8 @@ const CompareListingClient = ({ onProductClick }: CompareListingClientProps) => 
   const [viewMode, setViewMode] = useState<"list" | "grid">("list")
   const [loading, setLoading] = useState(true)
   const [showFilters, setShowFilters] = useState(false)
+  
+  const { balance: voucherBalance } = useVoucher()
 
   // Fetch data
   useEffect(() => {
@@ -226,7 +229,7 @@ const CompareListingClient = ({ onProductClick }: CompareListingClientProps) => 
               </Button>
             </div>
 
-            <div className="flex items-center space-x-4">
+                                      <div className="flex items-center space-x-4">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                 <Input
@@ -255,11 +258,23 @@ const CompareListingClient = ({ onProductClick }: CompareListingClientProps) => 
                   <Grid className="w-4 h-4" />
                 </Button>
               </div>
-
-              <select className="office-input w-20" value="13" onChange={() => {}}>
-                <option>13개</option>
-                <option>전체</option>
-              </select>
+              
+              {/* 온누리 상품권 잔액 표시 */}
+              <div className="flex items-center space-x-2 px-3 py-2 bg-green-50 border border-green-200 rounded-lg">
+                <Gift className="w-4 h-4 text-green-600" />
+                <span className="text-sm font-medium text-green-800">온누리 잔액:</span>
+                <span className="text-sm font-bold text-green-700">
+                  {new Intl.NumberFormat("ko-KR").format(voucherBalance)}원
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => window.location.href = "/onnuri-voucher"}
+                  className="ml-2 h-6 px-2 text-xs border-green-300 text-green-700 hover:bg-green-100"
+                >
+                  관리
+                </Button>
+              </div>
             </div>
           </div>
 

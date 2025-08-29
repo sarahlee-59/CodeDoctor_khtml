@@ -102,7 +102,6 @@ export default function RecommendTab() {
                 <SelectContent>
                   <SelectItem value="전체">전체</SelectItem>
                   <SelectItem value="동대문구">동대문구</SelectItem>
-                  <SelectItem value="종로구">종로구</SelectItem>
                 </SelectContent>
               </Select>
             </div>

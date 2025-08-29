@@ -27,27 +27,88 @@ interface PriceIndexData {
   lastUpdated: string
 }
 
+interface AvailableProduct {
+  value: string
+  label: string
+  category: string
+}
+
 export function PriceIndexTab() {
   const [data, setData] = useState<PriceIndexData | null>(null)
-  const [selectedProduct, setSelectedProduct] = useState<string>("배추")
+  const [availableProducts, setAvailableProducts] = useState<AvailableProduct[]>([])
+  const [selectedProduct, setSelectedProduct] = useState<string>("cabbage")
   const [selectedPeriod, setSelectedPeriod] = useState<string>("1week")
   const [showTable, setShowTable] = useState(false)
   const [loading, setLoading] = useState(true)
 
+  // 사용 가능한 제품 목록 로드
+  useEffect(() => {
+    const loadAvailableProducts = async () => {
+      try {
+        console.log("🔍 제품 목록 로딩 시작...")
+        const response = await fetch("/api/available-products")
+        if (!response.ok) {
+          throw new Error(`제품 목록 API 오류: ${response.status}`)
+        }
+        const data = await response.json()
+        console.log("🔍 제품 목록 로딩 완료:", data)
+        
+        if (data.products && data.products.length > 0) {
+          setAvailableProducts(data.products)
+          // 첫 번째 제품을 기본 선택
+          setSelectedProduct(data.products[0].value)
+          console.log("🔍 기본 제품 선택:", data.products[0].value)
+        }
+      } catch (error) {
+        console.error("❌ 제품 목록 로딩 실패:", error)
+        // 에러 발생 시 기본 제품 설정
+        setAvailableProducts([
+          { value: "cabbage", label: "배추", category: "채소" }
+        ])
+        setSelectedProduct("cabbage")
+      }
+    }
+
+    loadAvailableProducts()
+  }, [])
+
   useEffect(() => {
     const loadData = async () => {
+      if (!selectedProduct) {
+        console.log("🔍 제품이 선택되지 않음, 데이터 로딩 건너뜀")
+        return
+      }
+      
       try {
-        const priceData = await fetcher<PriceIndexData>("/api/price-index.json")
-        setData(priceData)
+        console.log("🔍 가격 데이터 로딩 시작:", selectedProduct, selectedPeriod)
+        setLoading(true)
+        
+        // 실제 데이터베이스 API 사용
+        const url = `/api/price-index-real?product=${selectedProduct}&period=${selectedPeriod}`
+        console.log("🔍 API URL:", url)
+        
+        const priceData = await fetcher<PriceIndexData>(url)
+        console.log("🔍 가격 데이터 로딩 완료:", priceData)
+        console.log("🔍 데이터 구조:", JSON.stringify(priceData, null, 2))
+        
+        if (priceData && priceData.products && priceData.products.length > 0) {
+          console.log("🔍 제품 데이터 확인:", priceData.products)
+          setData(priceData)
+        } else {
+          console.warn("⚠️ 빈 데이터 또는 잘못된 구조:", priceData)
+          setData(null)
+        }
       } catch (error) {
-        console.error("Failed to load price index data:", error)
+        console.error("❌ 가격 데이터 로딩 실패:", error)
+        console.error("❌ 에러 상세:", error instanceof Error ? error.message : error)
+        setData(null)
       } finally {
         setLoading(false)
       }
     }
 
     loadData()
-  }, [])
+  }, [selectedProduct, selectedPeriod])
 
   const getCurrentProductData = () => {
     if (!data) return null
@@ -156,9 +217,26 @@ export function PriceIndexTab() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent className="rounded-sm">
-                    <SelectItem value="배추">배추</SelectItem>
-                    <SelectItem value="달걀">달걀</SelectItem>
-                    <SelectItem value="돼지고기">돼지고기</SelectItem>
+                    {Object.entries(
+                      availableProducts.reduce((acc, product) => {
+                        if (!acc[product.category]) {
+                          acc[product.category] = []
+                        }
+                        acc[product.category].push(product)
+                        return acc
+                      }, {} as Record<string, AvailableProduct[]>)
+                    ).map(([category, products]) => (
+                      <div key={category}>
+                        <div className="px-2 py-1.5 text-xs font-semibold text-muted-foreground bg-muted">
+                          {category}
+                        </div>
+                        {products.map((product) => (
+                          <SelectItem key={product.value} value={product.value}>
+                            {product.label}
+                          </SelectItem>
+                        ))}
+                      </div>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -171,6 +249,8 @@ export function PriceIndexTab() {
                   <SelectContent className="rounded-sm">
                     <SelectItem value="1week">1주</SelectItem>
                     <SelectItem value="1month">1개월</SelectItem>
+                    <SelectItem value="3months">3개월</SelectItem>
+                    <SelectItem value="6months">6개월</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -241,7 +321,6 @@ export function PriceIndexTab() {
               </ResponsiveContainer>
             </div>
           ) : (
-            /* Updated table with office styling and structured borders */
             <div className="office-grid grid-cols-1 gap-0">
               <div className="office-header grid grid-cols-6 gap-0 text-xs font-medium">
                 <div className="px-3 py-2 border-r border-border">날짜</div>

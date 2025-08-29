@@ -184,67 +184,181 @@ export default function RecommendForm() {
 
 
           {results.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {results.map((r, idx) => (
-                <div key={idx} className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 overflow-hidden group">
-                  {/* 카드 헤더 */}
-                  <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 text-white">
-                    <div className="flex items-center justify-between">
-                      <h3 className="font-bold text-lg truncate">{r.상권_코드_명}</h3>
-                      <span className="text-xs bg-white/20 px-2 py-1 rounded-full">
-                        {getIndustryIcon(r.서비스_업종_코드_명)} {r.서비스_업종_코드_명}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {/* 카드 바디 */}
-                  <div className="p-6 space-y-4">
-                    {/* 매출 정보 */}
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-600">당월 매출</span>
-                        <span className="font-bold text-blue-600">
-                          {r.당월_매출_금액?.toLocaleString() || 'N/A'} 원
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center justify-between p-3 bg-purple-50 rounded-lg">
-                        <span className="text-sm font-medium text-gray-600 flex items-center">
-                          {getTimeIcon(time)} {time} 매출
-                        </span>
-                        <span className="font-bold text-purple-600">
-                          {r.선택시간대_매출?.toLocaleString() || 'N/A'} 원
-                        </span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {results.map((r, idx) => {
+                // 매출 비율 계산 (시간대 매출 대비 당월 매출)
+                const timeRevenue = r.선택시간대_매출 || 0;
+                const monthRevenue = r.당월_매출_금액 || 0;
+                const revenueRatio = monthRevenue > 0 ? Math.min((timeRevenue / monthRevenue) * 100, 100) : 0;
+                
+                // ColdSpot 등급 계산 (매출이 낮을수록 높은 등급)
+                const coldSpotGrade = monthRevenue < 1000000 ? 'S' : 
+                                     monthRevenue < 2000000 ? 'A' : 
+                                     monthRevenue < 3000000 ? 'B' : 'C';
+                
+                const gradeColors = {
+                  'S': 'from-purple-500 to-pink-500',
+                  'A': 'from-blue-500 to-cyan-500', 
+                  'B': 'from-green-500 to-emerald-500',
+                  'C': 'from-yellow-500 to-orange-500'
+                };
+
+                return (
+                  <div 
+                    key={idx} 
+                    className="bg-white rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden group hover:-translate-y-2 relative"
+                    style={{
+                      animation: `fadeInUp 0.6s ease-out ${idx * 0.1}s both`
+                    }}
+                  >
+                    {/* ColdSpot 등급 배지 */}
+                    <div className="absolute top-4 right-4 z-10">
+                      <div className={`w-12 h-12 rounded-full bg-gradient-to-r ${gradeColors[coldSpotGrade]} flex items-center justify-center shadow-lg`}>
+                        <span className="text-white font-bold text-lg">{coldSpotGrade}</span>
                       </div>
                     </div>
 
-                    {/* ColdSpot 배지 */}
-                    <div className="flex items-center justify-center">
-                      <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border border-red-200">
-                        ❄️ ColdSpot 상권
-                      </span>
+                    {/* 카드 헤더 */}
+                    <div className="bg-gradient-to-br from-slate-800 via-slate-700 to-slate-900 p-6 text-white relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20"></div>
+                      <div className="relative z-10">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-bold text-xl leading-tight max-w-[70%]">{r.상권_코드_명}</h3>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-2xl">{getIndustryIcon(r.서비스_업종_코드_명)}</span>
+                          <span className="text-sm bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/20">
+                            {r.서비스_업종_코드_명}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* 카드 바디 */}
+                    <div className="p-6 space-y-5">
+                      {/* 매출 정보 with 프로그레스 바 */}
+                      <div className="space-y-4">
+                        {/* 당월 매출 */}
+                        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-4 rounded-2xl border border-blue-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-semibold text-gray-700 flex items-center">
+                              💰 당월 총 매출
+                            </span>
+                            <span className="font-bold text-blue-700 text-lg">
+                              {monthRevenue.toLocaleString()} 원
+                            </span>
+                          </div>
+                          <div className="w-full bg-blue-200 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-blue-500 to-cyan-500 h-2 rounded-full progress-bar"
+                              style={{ width: `${Math.min((monthRevenue / 5000000) * 100, 100)}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                        
+                        {/* 시간대별 매출 */}
+                        <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-2xl border border-purple-100">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-semibold text-gray-700 flex items-center">
+                              {getTimeIcon(time)} {time} 시간대 매출
+                            </span>
+                            <span className="font-bold text-purple-700 text-lg">
+                              {timeRevenue.toLocaleString()} 원
+                            </span>
+                          </div>
+                          <div className="w-full bg-purple-200 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full progress-bar"
+                              style={{ width: `${revenueRatio}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* 매출 효율성 지표 */}
+                      <div className="bg-gradient-to-r from-gray-50 to-slate-50 p-4 rounded-2xl border border-gray-200">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-semibold text-gray-600 flex items-center">
+                            📊 매출 효율성
+                          </span>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-sm text-gray-500">{revenueRatio.toFixed(1)}%</span>
+                            <div className={`w-3 h-3 rounded-full ${revenueRatio < 10 ? 'bg-green-400' : revenueRatio < 30 ? 'bg-yellow-400' : 'bg-red-400'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ColdSpot 특성 배지들 */}
+                      <div className="flex flex-wrap gap-2">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-emerald-100 to-teal-100 text-emerald-800 border border-emerald-200">
+                          ❄️ ColdSpot
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-orange-100 to-amber-100 text-orange-800 border border-orange-200">
+                          🎯 진입 기회
+                        </span>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-800 border border-blue-200">
+                          💡 잠재력
+                        </span>
+                      </div>
+
+                      {/* 액션 버튼 */}
+                      <div className="pt-2">
+                        <button className="w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl">
+                          🔍 상세 분석 보기
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-lg p-12 text-center border border-gray-100">
-              <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-r from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                <Search className="w-10 h-10 text-blue-500" />
+            <div className="bg-gradient-to-br from-white to-gray-50 rounded-3xl shadow-xl p-16 text-center border border-gray-200 relative overflow-hidden">
+              {/* 배경 장식 */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-purple-50/50"></div>
+              <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full -translate-y-16 translate-x-16"></div>
+              <div className="absolute bottom-0 left-0 w-24 h-24 bg-gradient-to-br from-cyan-200/30 to-blue-200/30 rounded-full translate-y-12 -translate-x-12"></div>
+              
+              <div className="relative z-10">
+                <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl animate-pulse-glow">
+                  <Search className="w-12 h-12 text-white" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-800 mb-3">
+                  🔍 ColdSpot을 찾고 있어요!
+                </h3>
+                <p className="text-gray-600 mb-8 text-lg leading-relaxed max-w-md mx-auto">
+                  현재 조건에 맞는 ColdSpot이 없거나<br/>
+                  검색 조건을 조정해보세요
+                </p>
+                
+                {/* 추천 팁 */}
+                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 mb-8 border border-gray-200">
+                  <h4 className="font-semibold text-gray-700 mb-3">💡 검색 팁</h4>
+                  <div className="text-sm text-gray-600 space-y-2">
+                    <p>• 지역을 '전체'로 변경해보세요</p>
+                    <p>• 다른 업종을 선택해보세요</p>
+                    <p>• 다른 시간대를 시도해보세요</p>
+                  </div>
+                </div>
+                
+                <button
+                  onClick={fetchData}
+                  disabled={isLoading}
+                  className="px-8 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-semibold rounded-2xl hover:from-indigo-600 hover:to-purple-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-2xl disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                >
+                  {isLoading ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>검색 중...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center space-x-2">
+                      <TrendingUp className="w-5 h-5" />
+                      <span>다시 검색하기</span>
+                    </div>
+                  )}
+                </button>
               </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">
-                추천 결과가 없습니다
-              </h3>
-              <p className="text-gray-500 mb-6">
-                검색 조건을 조정하여 다시 시도해보세요
-              </p>
-              <button
-                onClick={fetchData}
-                className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-200"
-              >
-                다시 검색하기
-              </button>
             </div>
           )}
         </div>

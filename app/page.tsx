@@ -9,7 +9,6 @@ import { CompareView } from "@/components/compare/CompareView"
 import { RecommendationTab } from "@/components/recommendation-tab"
 import { BenefitSimulatorTab } from "@/components/benefit-simulator-tab"
 import { MerchantPortalTab } from "@/components/merchant-portal-tab"
-import { PriceIndexList } from "@/components/price-index-list"
 import RecommendForm from "@/components/RecommendForm"
 import { ArrowLeft } from "lucide-react"
 
@@ -88,8 +87,20 @@ export default function HomePage() {
                 <HeatmapTab />
               </TabsContent>
 
-              <TabsContent value="price-index" className="mt-0 p-6 border-0">
-                <PriceIndexList />
+              <TabsContent value="price-index" className="mt-0 p-0 border-0">
+                {currentView === "list" ? (
+                  <CompareListingClient onProductClick={handleProductClick} />
+                ) : (
+                  <div>
+                    <div className="p-4 border-b border-border bg-card">
+                      <Button variant="ghost" onClick={handleBackToList} className="flex items-center gap-2 text-sm">
+                        <ArrowLeft className="h-4 w-4" />
+                        목록으로 돌아가기
+                      </Button>
+                    </div>
+                    <CompareView initialItem={selectedItem} />
+                  </div>
+                )}
               </TabsContent>
 
               <TabsContent value="recommendation" className="mt-0 p-6 border-0">

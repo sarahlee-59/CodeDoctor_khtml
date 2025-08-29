@@ -9,7 +9,7 @@ export async function GET() {
     const connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "1258",
+      password: "Muxchk@01033",
       database: "seoyeon_db",
     });
     console.log("✅ MySQL 연결 성공");

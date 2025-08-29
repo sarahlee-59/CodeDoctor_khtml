@@ -1,0 +1,80 @@
+{
+  "meta": {
+    "updatedAt": "2025-08-29",
+    "marketName": "동대문 전통시장"
+  },
+  "zones": [
+    {
+      "id": "동대문종합시장",
+      "centroid": [37.5838, 127.0373],
+      "scoreZ": 85,
+      "score3040": 72,
+      "score5060": 45,
+      "shopCount": 120,
+      "category": "종합상가"
+    },
+    {
+      "id": "동대문의류상가",
+      "centroid": [37.5803, 127.0476],
+      "scoreZ": 92,
+      "score3040": 68,
+      "score5060": 35,
+      "shopCount": 85,
+      "category": "의류"
+    },
+    {
+      "id": "청과물시장",
+      "centroid": [37.5892, 127.0577],
+      "scoreZ": 45,
+      "score3040": 78,
+      "score5060": 88,
+      "shopCount": 65,
+      "category": "채소과일"
+    },
+    {
+      "id": "수산물시장",
+      "centroid": [37.5742, 127.0456],
+      "scoreZ": 38,
+      "score3040": 65,
+      "score5060": 92,
+      "shopCount": 45,
+      "category": "수산물"
+    },
+    {
+      "id": "정육점거리",
+      "centroid": [37.5665, 127.0587],
+      "scoreZ": 42,
+      "score3040": 82,
+      "score5060": 75,
+      "shopCount": 35,
+      "category": "육류"
+    },
+    {
+      "id": "반찬골목",
+      "centroid": [37.5756, 127.0298],
+      "scoreZ": 55,
+      "score3040": 88,
+      "score5060": 95,
+      "shopCount": 55,
+      "category": "반찬"
+    },
+    {
+      "id": "건어물상가",
+      "centroid": [37.5712, 127.0389],
+      "scoreZ": 32,
+      "score3040": 58,
+      "score5060": 85,
+      "shopCount": 28,
+      "category": "건어물"
+    },
+    {
+      "id": "떡방앗간거리",
+      "centroid": [37.5734, 127.0254],
+      "scoreZ": 48,
+      "score3040": 72,
+      "score5060": 82,
+      "shopCount": 18,
+      "category": "떡방앗간"
+    }
+  ]
+}

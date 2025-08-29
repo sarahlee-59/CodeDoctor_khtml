@@ -15,12 +15,10 @@ interface AvailableProduct {
 
 interface PriceSummary {
   latest: {
-    seoul: number
-    mart: number
-    dongdaemun: number
+    largeRetail: number
+    traditionalMarket: number
   }
-  seoulSavings: number
-  martSavings: number
+  traditionalSavings: number
   buySignal: boolean
 }
 
@@ -66,12 +64,10 @@ export function PriceIndexList() {
         fallbackProducts.forEach(product => {
           fallbackSummaries[product.value] = {
             latest: {
-              seoul: 5000,
-              mart: 4500,
-              dongdaemun: 4000
+              largeRetail: 4500,
+              traditionalMarket: 4000
             },
-            seoulSavings: 20,
-            martSavings: 11,
+            traditionalSavings: 11,
             buySignal: true
           }
         })
@@ -101,21 +97,19 @@ export function PriceIndexList() {
             const latest = productData.data[productData.data.length - 1]
             console.log(`🔍 ${product.label} 최신 데이터:`, latest)
             
-            const seoulSavings = Math.round(((latest.seoul - latest.dongdaemun) / latest.seoul) * 100)
-            const martSavings = Math.round(((latest.mart - latest.dongdaemun) / latest.mart) * 100)
+            const traditionalSavings = Math.round(((latest.largeRetail - latest.traditionalMarket) / latest.largeRetail) * 100)
             
             // 3일 이동평균 기울기로 BUY 신호 계산
             const recent3Days = productData.data.slice(-3)
             let buySignal = false
             if (recent3Days.length >= 3) {
-              const slope = (recent3Days[2].dongdaemun - recent3Days[0].dongdaemun) / 2
-              buySignal = latest.dongdaemun < latest.seoul && latest.dongdaemun < latest.mart && slope < 0
+              const slope = (recent3Days[2].traditionalMarket - recent3Days[0].traditionalMarket) / 2
+              buySignal = latest.traditionalMarket < latest.largeRetail && slope < 0
             }
 
             summaries[product.value] = {
               latest,
-              seoulSavings,
-              martSavings,
+              traditionalSavings,
               buySignal
             }
             console.log(`✅ ${product.label} 요약 데이터 생성 완료:`, summaries[product.value])
@@ -251,39 +245,26 @@ export function PriceIndexList() {
               
               <CardContent className="space-y-4">
                 {/* 가격 정보 */}
-                <div className="grid grid-cols-3 gap-2 text-sm">
-                  <div className="text-center">
-                    <div className="font-medium text-muted-foreground">서울</div>
-                    <div className="font-bold">{summary.latest.seoul.toLocaleString()}원</div>
-                  </div>
+                <div className="grid grid-cols-2 gap-2 text-sm">
                   <div className="text-center">
                     <div className="font-medium text-muted-foreground">대형마트</div>
-                    <div className="font-bold">{summary.latest.mart.toLocaleString()}원</div>
+                    <div className="font-bold">{summary.latest.largeRetail.toLocaleString()}원</div>
                   </div>
                   <div className="text-center">
-                    <div className="font-medium text-muted-foreground">동대문</div>
-                    <div className="font-bold text-primary">{summary.latest.dongdaemun.toLocaleString()}원</div>
+                    <div className="font-medium text-muted-foreground">전통시장</div>
+                    <div className="font-bold text-primary">{summary.latest.traditionalMarket.toLocaleString()}원</div>
                   </div>
                 </div>
 
                 {/* 절약율 */}
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">서울 대비 절약</span>
+                    <span className="text-muted-foreground">전통시장 절약</span>
                     <Badge 
-                      variant={getSavingsBadgeVariant(summary.seoulSavings)}
-                      className={getSavingsColor(summary.seoulSavings)}
+                      variant={getSavingsBadgeVariant(summary.traditionalSavings)}
+                      className={getSavingsColor(summary.traditionalSavings)}
                     >
-                      {summary.seoulSavings}%
-                    </Badge>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">대형마트 대비 절약</span>
-                    <Badge 
-                      variant={getSavingsBadgeVariant(summary.martSavings)}
-                      className={getSavingsColor(summary.martSavings)}
-                    >
-                      {summary.martSavings}%
+                      {summary.traditionalSavings}%
                     </Badge>
                   </div>
                 </div>

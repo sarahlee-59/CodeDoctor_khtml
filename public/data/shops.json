@@ -1,0 +1,152 @@
+[
+  {
+    "id": "shop-001",
+    "name": "청량리 할머니 순대국",
+    "category": "한식",
+    "open": 6,
+    "close": 22,
+    "lat": 37.5801,
+    "lng": 127.0474,
+    "age_fit": "5060"
+  },
+  {
+    "id": "shop-002",
+    "name": "DDP 떡볶이 마을",
+    "category": "분식",
+    "open": 11,
+    "close": 23,
+    "lat": 37.5665,
+    "lng": 127.0092,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-003",
+    "name": "전통 호떡집",
+    "category": "전통간식",
+    "open": 14,
+    "close": 21,
+    "lat": 37.57,
+    "lng": 127.02,
+    "age_fit": "3040"
+  },
+  {
+    "id": "shop-004",
+    "name": "24시 편의점",
+    "category": "편의",
+    "open": 0,
+    "close": 24,
+    "lat": 37.575,
+    "lng": 127.03,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-005",
+    "name": "청량리 김밥천국",
+    "category": "분식",
+    "open": 7,
+    "close": 20,
+    "lat": 37.582,
+    "lng": 127.045,
+    "age_fit": "3040"
+  },
+  {
+    "id": "shop-006",
+    "name": "동대문 족발집",
+    "category": "한식",
+    "open": 17,
+    "close": 2,
+    "lat": 37.571,
+    "lng": 127.009,
+    "age_fit": "5060"
+  },
+  {
+    "id": "shop-007",
+    "name": "붕어빵 아저씨",
+    "category": "전통간식",
+    "open": 15,
+    "close": 22,
+    "lat": 37.568,
+    "lng": 127.015,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-008",
+    "name": "청량리 카페거리",
+    "category": "기타",
+    "open": 8,
+    "close": 22,
+    "lat": 37.579,
+    "lng": 127.048,
+    "age_fit": "3040"
+  },
+  {
+    "id": "shop-009",
+    "name": "DDP 야식 포차",
+    "category": "한식",
+    "open": 18,
+    "close": 4,
+    "lat": 37.565,
+    "lng": 127.008,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-010",
+    "name": "동대문 치킨집",
+    "category": "기타",
+    "open": 16,
+    "close": 1,
+    "lat": 37.572,
+    "lng": 127.011,
+    "age_fit": "3040"
+  },
+  {
+    "id": "shop-011",
+    "name": "서울역 24시 찜닭",
+    "category": "한식",
+    "open": 0,
+    "close": 24,
+    "lat": 37.5547,
+    "lng": 126.9706,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-012",
+    "name": "명동 길거리 토스트",
+    "category": "분식",
+    "open": 9,
+    "close": 18,
+    "lat": 37.5636,
+    "lng": 126.9834,
+    "age_fit": "3040"
+  },
+  {
+    "id": "shop-013",
+    "name": "인사동 전통차집",
+    "category": "기타",
+    "open": 10,
+    "close": 21,
+    "lat": 37.5717,
+    "lng": 126.9856,
+    "age_fit": "5060"
+  },
+  {
+    "id": "shop-014",
+    "name": "홍대 야식 포장마차",
+    "category": "한식",
+    "open": 19,
+    "close": 5,
+    "lat": 37.5563,
+    "lng": 126.9236,
+    "age_fit": "Z"
+  },
+  {
+    "id": "shop-015",
+    "name": "강남 디저트 카페",
+    "category": "기타",
+    "open": 11,
+    "close": 23,
+    "lat": 37.4979,
+    "lng": 127.0276,
+    "age_fit": "3040"
+  }
+]

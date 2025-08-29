@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { countByVendorType } from "@/lib/db"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -8,29 +9,8 @@ import { Switch } from "@/components/ui/switch"
 import { Heart, Star, ShoppingCart, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
-interface Product {
-  id: string
-  name: string
-  category: string
-  subcategory: string
-  origin: string
-  region: string
-  weight: string
-  grade: string
-  image: string
-  basePrice: number
-  discountRate: number
-  finalPrice: number
-  lowestPrice: number
-  lowestPriceVendor: string
-  distance: string
-  rating: number
-  reviewCount: number
-  registeredDate: string
-  benefits: string[]
-  inStock: boolean
-  freshness: string
-}
+// Product 인터페이스는 이제 lib/db.ts에서 가져옵니다
+import { type Product } from "@/lib/db"
 
 interface ProductListProps {
   products: Product[]
@@ -132,12 +112,12 @@ export default function ProductList({
               <div className="space-y-1 text-sm">
                 <div>
                   <span className="font-medium text-gray-700">관련기사</span>
-                  <span className="ml-2 text-gray-600">동대문 전통시장 {product.name} 품질 향상으로 인기 상승...</span>
+                  <span className="ml-2 text-gray-600">{product.articles[0]?.title}</span>
                 </div>
                 <div>
                   <span className="font-medium text-gray-700">사용기</span>
                   <span className="ml-2 text-gray-600">
-                    [{product.name} 구매 후기] 신선하고 맛있어서 재구매 의향...
+                    [{product.name} 구매 후기] {product.reviews[0]?.content}
                   </span>
                 </div>
               </div>
@@ -210,8 +190,12 @@ export default function ProductList({
           <button className="px-4 py-3 border-b-2 border-blue-600 text-blue-600 font-medium">
             전체 ({products.length.toLocaleString()})
           </button>
-          <button className="px-4 py-3 text-gray-600 hover:text-gray-900">가격비교 (953)</button>
-          <button className="px-4 py-3 text-gray-600 hover:text-gray-900">컵셀 상품 (73,082)</button>
+          <button className="px-4 py-3 text-gray-600 hover:text-gray-900">
+            전통시장 ({countByVendorType(products, '전통시장')})
+          </button>
+          <button className="px-4 py-3 text-gray-600 hover:text-gray-900">
+            대형마트 ({countByVendorType(products, '마트')})
+          </button>
         </div>
 
         <div className="flex items-center justify-between p-4 bg-gray-50">

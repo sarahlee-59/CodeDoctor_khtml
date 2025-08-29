@@ -1,10 +1,11 @@
 {
   "series": [
-    { "date": "2025-08-15", "seoulAvg": 1500, "martAvg": 1650, "ddmMarket": 1200 },
-    { "date": "2025-08-16", "seoulAvg": 1520, "martAvg": 1660, "ddmMarket": 1190 },
-    { "date": "2025-08-17", "seoulAvg": 1490, "martAvg": 1640, "ddmMarket": 1180 },
-    { "date": "2025-08-18", "seoulAvg": 1510, "martAvg": 1655, "ddmMarket": 1175 },
-    { "date": "2025-08-19", "seoulAvg": 1505, "martAvg": 1650, "ddmMarket": 1160 },
-    { "date": "2025-08-20", "seoulAvg": 1500, "martAvg": 1645, "ddmMarket": 1150 }
+    { "date": "2024-02-14", "seoulAvg": 4200, "martAvg": 4500, "ddmMarket": 3800 },
+    { "date": "2024-02-15", "seoulAvg": 4150, "martAvg": 4450, "ddmMarket": 3750 },
+    { "date": "2024-02-16", "seoulAvg": 4100, "martAvg": 4400, "ddmMarket": 3700 },
+    { "date": "2024-02-17", "seoulAvg": 4050, "martAvg": 4350, "ddmMarket": 3650 },
+    { "date": "2024-02-18", "seoulAvg": 4000, "martAvg": 4300, "ddmMarket": 3600 },
+    { "date": "2024-02-19", "seoulAvg": 3950, "martAvg": 4250, "ddmMarket": 3550 },
+    { "date": "2024-02-20", "seoulAvg": 3900, "martAvg": 4200, "ddmMarket": 3500 }
   ]
 }

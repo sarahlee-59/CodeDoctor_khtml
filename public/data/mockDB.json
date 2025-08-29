@@ -1,0 +1,235 @@
+{
+  "products": [
+    {
+      "id": "1",
+      "name": "배추",
+      "category": "채소류",
+      "subcategory": "엽채류",
+      "origin": "국산",
+      "region": "강원도",
+      "weight": "3kg (1포기)",
+      "grade": "특",
+      "image": "/placeholder.svg",
+      "basePrice": 8000,
+      "discountRate": 15,
+      "finalPrice": 6800,
+      "lowestPrice": 6500,
+      "lowestPriceVendor": "동대문전통시장",
+      "distance": "0.8km",
+      "rating": 4.7,
+      "reviewCount": 142,
+      "registeredDate": "2024-02-20",
+      "benefits": ["온누리상품권", "카드할인"],
+      "inStock": true,
+      "freshness": "당일입고",
+      "articles": [
+        {
+          "title": "동대문 전통시장 배추 품질 향상으로 인기 상승",
+          "summary": "철저한 품질 관리와 신선도 유지로 소비자 만족도 증가"
+        }
+      ],
+      "reviews": [
+        {
+          "title": "배추 구매 후기",
+          "content": "신선하고 맛있어서 재구매 의향 있음",
+          "rating": 5,
+          "date": "2024-02-19"
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "name": "양파",
+      "category": "채소류",
+      "subcategory": "구근류",
+      "origin": "국산",
+      "region": "전라남도",
+      "weight": "3kg",
+      "grade": "상",
+      "image": "/placeholder.svg",
+      "basePrice": 7000,
+      "discountRate": 10,
+      "finalPrice": 6300,
+      "lowestPrice": 6000,
+      "lowestPriceVendor": "이마트",
+      "distance": "1.2km",
+      "rating": 4.5,
+      "reviewCount": 98,
+      "registeredDate": "2024-02-19",
+      "benefits": ["컵셀", "카드할인"],
+      "inStock": true,
+      "freshness": "당일입고",
+      "articles": [
+        {
+          "title": "전라남도 양파 작황 호조로 가격 안정세",
+          "summary": "생산량 증가로 소비자 가격 부담 완화 전망"
+        }
+      ],
+      "reviews": [
+        {
+          "title": "양파 품질 좋아요",
+          "content": "크기도 적당하고 단단해서 좋습니다",
+          "rating": 4,
+          "date": "2024-02-18"
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "name": "사과",
+      "category": "과일류",
+      "subcategory": "사과",
+      "origin": "국산",
+      "region": "경상북도",
+      "weight": "5kg",
+      "grade": "특",
+      "image": "/placeholder.svg",
+      "basePrice": 25000,
+      "discountRate": 20,
+      "finalPrice": 20000,
+      "lowestPrice": 19000,
+      "lowestPriceVendor": "광장전통시장",
+      "distance": "0.5km",
+      "rating": 4.8,
+      "reviewCount": 256,
+      "registeredDate": "2024-02-18",
+      "benefits": ["온누리상품권"],
+      "inStock": true,
+      "freshness": "당일입고",
+      "articles": [
+        {
+          "title": "경북 사과 당도 높아 소비자 호평",
+          "summary": "일조량 풍부해 당도 높은 사과 생산"
+        }
+      ],
+      "reviews": [
+        {
+          "title": "달고 맛있어요",
+          "content": "아이들이 너무 좋아해서 자주 구매합니다",
+          "rating": 5,
+          "date": "2024-02-17"
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "name": "무",
+      "category": "채소류",
+      "subcategory": "근채류",
+      "origin": "국산",
+      "region": "제주도",
+      "weight": "2kg",
+      "grade": "상",
+      "image": "/placeholder.svg",
+      "basePrice": 4500,
+      "discountRate": 10,
+      "finalPrice": 4050,
+      "lowestPrice": 3800,
+      "lowestPriceVendor": "홈플러스",
+      "distance": "2.1km",
+      "rating": 4.3,
+      "reviewCount": 78,
+      "registeredDate": "2024-02-20",
+      "benefits": ["컵셀"],
+      "inStock": true,
+      "freshness": "당일입고",
+      "articles": [
+        {
+          "title": "제주 무 수확량 증가",
+          "summary": "기상 여건 호조로 품질 좋은 무 수확"
+        }
+      ],
+      "reviews": [
+        {
+          "title": "시원하고 단단해요",
+          "content": "김치 담그기 좋은 크기입니다",
+          "rating": 4,
+          "date": "2024-02-19"
+        }
+      ]
+    },
+    {
+      "id": "5",
+      "name": "돼지고기 삼겹살",
+      "category": "축산물",
+      "subcategory": "돼지고기",
+      "origin": "국산",
+      "region": "전라남도",
+      "weight": "1kg",
+      "grade": "1+",
+      "image": "/placeholder.svg",
+      "basePrice": 22000,
+      "discountRate": 15,
+      "finalPrice": 18700,
+      "lowestPrice": 18000,
+      "lowestPriceVendor": "신중부시장",
+      "distance": "1.0km",
+      "rating": 4.9,
+      "reviewCount": 312,
+      "registeredDate": "2024-02-20",
+      "benefits": ["온누리상품권", "카드할인"],
+      "inStock": true,
+      "freshness": "당일",
+      "articles": [
+        {
+          "title": "전남 돼지고기 품질 인증 획득",
+          "summary": "HACCP 인증으로 위생 관리 강화"
+        }
+      ],
+      "reviews": [
+        {
+          "title": "고기 질이 좋아요",
+          "content": "선도도 좋고 가격도 합리적입니다",
+          "rating": 5,
+          "date": "2024-02-20"
+        }
+      ]
+    }
+  ],
+  "vendors": [
+    {
+      "id": "traditional",
+      "name": "전통시장",
+      "count": 3
+    },
+    {
+      "id": "mart",
+      "name": "대형마트",
+      "count": 2
+    }
+  ],
+  "categories": [
+    {
+      "id": "vegetables",
+      "name": "채소류",
+      "count": 3
+    },
+    {
+      "id": "fruits",
+      "name": "과일류",
+      "count": 1
+    },
+    {
+      "id": "livestock",
+      "name": "축산물",
+      "count": 1
+    }
+  ],
+  "benefits": [
+    {
+      "id": "onnuri",
+      "name": "온누리상품권",
+      "count": 3
+    },
+    {
+      "id": "card",
+      "name": "카드할인",
+      "count": 3
+    },
+    {
+      "id": "cupsel",
+      "name": "컵셀",
+      "count": 2
+    }
+  ]
+}

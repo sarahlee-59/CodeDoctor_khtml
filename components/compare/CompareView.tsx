@@ -117,11 +117,13 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
               <SelectTrigger className="w-40 h-8 text-xs border-gray-300">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="home">컴퓨터/노트북/조립PC</SelectItem>
-                <SelectItem value="vegetables">채소류</SelectItem>
-                <SelectItem value="meat">정육류</SelectItem>
-              </SelectContent>
+                              <SelectContent>
+                  <SelectItem value="vegetables">채소류</SelectItem>
+                  <SelectItem value="fruits">과일류</SelectItem>
+                  <SelectItem value="meat">정육류</SelectItem>
+                  <SelectItem value="fish">수산물</SelectItem>
+                  <SelectItem value="grains">곡물류</SelectItem>
+                </SelectContent>
             </Select>
             <Select defaultValue="cabbage">
               <SelectTrigger className="w-32 h-8 text-xs border-gray-300">
@@ -158,15 +160,8 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
           <div className="flex items-start justify-between">
             <div className="flex-1">
               <h1 className="text-2xl font-bold mb-2">동대문 전통시장 {selectedItem} 1포기 특급</h1>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs px-2 py-1 mr-2">
-                VS컴퓨터
-              </Badge>
-              <div className="text-sm text-gray-600 mt-2 leading-relaxed">
-                {selectedItem} 특급 | 원산지: 국산 | 중량: 2-3kg | 등급: 특급 | 포장: 개별포장 | 보관방법: 냉장보관 |
-                유통기한: 수확 후 7일 | 농약: 무농약 | 인증: 친환경인증 | 배송: 당일배송 | 판매자: 동대문종합시장 |
-                연락처: 02-123-4567 | 영업시간: 06:00-18:00 | 휴무: 일요일 | 주차: 가능 | 카드결제: 가능 | 온누리상품권:
-                사용가능 | A/S: 교환/환불 가능
-              </div>
+
+
             </div>
             <div className="flex items-center gap-3 ml-6">
               <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 h-auto py-2 px-3">
@@ -226,13 +221,8 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
                   광고상품
                 </button>
               </div>
-              <div className="text-xs text-gray-500 space-y-1">
-                <p>등록월: 2025.01.</p>
-                <p>제조사: 동대문시장</p>
-                <p>이미지출처: 제조사제공</p>
-              </div>
               <Button variant="outline" size="sm" className="w-full text-xs bg-transparent">
-                📊 EMTEK 브랜드로그
+                📊 시장 정보
               </Button>
             </div>
           </div>
@@ -262,7 +252,7 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium">멤버십/카드결제 최대 혜택가</h3>
                     <Button variant="ghost" size="sm" className="text-blue-600 text-sm">
-                      다나와 최저가보다 낮아요! ▼
+                      대형마트보다 저렴해요! ▼
                     </Button>
                   </div>
                 </div>
@@ -372,30 +362,11 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
               </Card>
 
               {/* Related Products */}
-              <Card className="bg-white">
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-sm">상품의견 137건</h3>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        ‹
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        ›
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-xs text-gray-600">
-                    <p>• 리얼리 Vector V100 게이스에 장착 가능한가요?</p>
-                    <p>• GIGABYTE B860M DS3H 제이씨현 마이크론 186378 마이크론 Crucial P510 M.2 N...</p>
-                  </div>
-                </div>
-              </Card>
 
               <Card className="bg-white">
                 <div className="p-4">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-sm">다른 고객이 함께 본 상품</h3>
+                    <h3 className="font-medium text-sm">함께 구매하면 좋은 상품</h3>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
                         ‹
@@ -406,11 +377,15 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
-                    {[1, 2, 3].map((i) => (
+                    {[
+                      { name: "무", img: "/fresh-cabbage.png" },
+                      { name: "양파", img: "/fresh-cabbage.png" },
+                      { name: "당근", img: "/fresh-cabbage.png" }
+                    ].map((item, i) => (
                       <div key={i} className="aspect-square bg-gray-100 rounded overflow-hidden">
                         <Image
-                          src={`/related-products-display.png?height=80&width=80&query=related product ${i}`}
-                          alt={`관련 상품 ${i}`}
+                          src={item.img}
+                          alt={item.name}
                           width={80}
                           height={80}
                           className="w-full h-full object-cover"

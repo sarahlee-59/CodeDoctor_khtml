@@ -9,7 +9,7 @@ import { CompareView } from "@/components/compare/CompareView"
 import { RecommendationTab } from "@/components/recommendation-tab"
 import { BenefitSimulatorTab } from "@/components/benefit-simulator-tab"
 import { MerchantPortalTab } from "@/components/merchant-portal-tab"
-import ColdSpotTab from "@/components/cold-spot-tab"
+import RecommendForm from "@/components/RecommendForm"
 import { ArrowLeft } from "lucide-react"
 
 export default function HomePage() {
@@ -116,7 +116,7 @@ export default function HomePage() {
               </TabsContent>
 
               <TabsContent value="cold-spot" className="mt-0 p-6 border-0">
-                <ColdSpotTab />
+                <RecommendForm />
               </TabsContent>
             </div>
           </Tabs>

@@ -9,6 +9,7 @@ import { CompareView } from "@/components/compare/CompareView"
 import { RecommendationTab } from "@/components/recommendation-tab"
 import { BenefitSimulatorTab } from "@/components/benefit-simulator-tab"
 import { MerchantPortalTab } from "@/components/merchant-portal-tab"
+import ColdSpotTab from "@/components/cold-spot-tab"
 import { ArrowLeft } from "lucide-react"
 
 export default function HomePage() {
@@ -42,7 +43,7 @@ export default function HomePage() {
 
         <div className="bg-card border-b border-border">
           <Tabs defaultValue="heatmap" className="w-full">
-            <TabsList className="w-full h-auto p-0 bg-transparent border-0 rounded-none grid grid-cols-5">
+            <TabsList className="w-full h-auto p-0 bg-transparent border-0 rounded-none grid grid-cols-6">
               <TabsTrigger
                 value="heatmap"
                 className="rounded-none border-r border-border data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-3 px-4 text-sm font-medium"
@@ -69,9 +70,15 @@ export default function HomePage() {
               </TabsTrigger>
               <TabsTrigger
                 value="merchant-portal"
-                className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-3 px-4 text-sm font-medium"
+                className="rounded-none border-r border-border data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-3 px-4 text-sm font-medium"
               >
                 상인 포털
+              </TabsTrigger>
+              <TabsTrigger
+                value="cold-spot"
+                className="rounded-none data-[state=active]:bg-primary data-[state=active]:text-primary-foreground py-3 px-4 text-sm font-medium"
+              >
+                ColdSpot 분석
               </TabsTrigger>
             </TabsList>
 
@@ -106,6 +113,10 @@ export default function HomePage() {
 
               <TabsContent value="merchant-portal" className="mt-0 p-6 border-0">
                 <MerchantPortalTab />
+              </TabsContent>
+
+              <TabsContent value="cold-spot" className="mt-0 p-6 border-0">
+                <ColdSpotTab />
               </TabsContent>
             </div>
           </Tabs>

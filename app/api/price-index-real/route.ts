@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "wogus!204",
+      password: "0409",
       database: "seoyeon_db",
     });
 
@@ -45,9 +45,8 @@ export async function GET(request: Request) {
     // 데이터 형식 변환
     const formattedData = (rows as any[]).map(row => ({
       date: row.pub_date.toISOString().split('T')[0],
-      seoul: row.j_avg_price,
-      mart: row.m_avg_price,
-      dongdaemun: row.j_avg_price
+      traditionalMarket: row.j_avg_price,    // 전통시장 가격
+      largeRetail: row.m_avg_price           // 대형유통사 가격
     })).reverse(); // 차트를 위해 날짜순으로 정렬
 
     const result = {
@@ -70,8 +69,13 @@ export async function GET(request: Request) {
 
   } catch (err) {
     console.error("❌ 가격지수 API 오류:", err);
+    console.error("❌ 오류 상세:", err instanceof Error ? err.message : err);
     return NextResponse.json(
-      { error: "가격지수 데이터 조회 중 오류 발생", details: err },
+      { 
+        error: "가격지수 데이터 조회 중 오류 발생", 
+        details: err instanceof Error ? err.message : String(err),
+        timestamp: new Date().toISOString()
+      },
       { status: 500 }
     );
   }

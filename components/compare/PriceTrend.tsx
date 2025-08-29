@@ -7,9 +7,8 @@ import { TrendingDown } from "lucide-react"
 
 interface PriceData {
   date: string
-  seoulAvg: number
-  martAvg: number
-  ddmMarket: number
+  traditionalMarket: number
+  largeRetail: number
 }
 
 interface PriceTrendProps {
@@ -22,9 +21,8 @@ export function PriceTrend({ data, loading }: PriceTrendProps) {
 
   const formatTooltip = (value: number, name: string) => {
     const labels: Record<string, string> = {
-      seoulAvg: "서울 평균",
-      martAvg: "대형마트",
-      ddmMarket: "동대문시장",
+      traditionalMarket: "전통시장",
+      largeRetail: "대형마트",
     }
     return [`${formatter.format(value)}원`, labels[name] || name]
   }
@@ -38,10 +36,10 @@ export function PriceTrend({ data, loading }: PriceTrendProps) {
     if (!data?.series || data.series.length < 3) return false
 
     const recent3 = data.series.slice(-3)
-    const avgSlope = (recent3[2].ddmMarket - recent3[0].ddmMarket) / 2
+    const avgSlope = (recent3[2].traditionalMarket - recent3[0].traditionalMarket) / 2
     const latest = data.series[data.series.length - 1]
 
-    return avgSlope < 0 && latest.ddmMarket < latest.seoulAvg && latest.ddmMarket < latest.martAvg
+    return avgSlope < 0 && latest.traditionalMarket < latest.largeRetail
   }
 
   if (loading) {
@@ -108,36 +106,27 @@ export function PriceTrend({ data, loading }: PriceTrendProps) {
               wrapperStyle={{ fontSize: "12px" }}
               formatter={(value) => {
                 const labels: Record<string, string> = {
-                  seoulAvg: "서울 평균",
-                  martAvg: "대형마트",
-                  ddmMarket: "동대문시장",
+                  traditionalMarket: "전통시장",
+                  largeRetail: "대형마트",
                 }
                 return labels[value] || value
               }}
             />
             <Line
               type="monotone"
-              dataKey="seoulAvg"
-              stroke="#8884d8"
+              dataKey="largeRetail"
+              stroke="#ef4444"
               strokeWidth={2}
-              dot={{ fill: "#8884d8", strokeWidth: 2, r: 3 }}
-              activeDot={{ r: 5, stroke: "#8884d8", strokeWidth: 2 }}
+              dot={{ fill: "#ef4444", strokeWidth: 2, r: 3 }}
+              activeDot={{ r: 5, stroke: "#ef4444", strokeWidth: 2 }}
             />
             <Line
               type="monotone"
-              dataKey="martAvg"
-              stroke="#82ca9d"
+              dataKey="traditionalMarket"
+              stroke="#22c55e"
               strokeWidth={2}
-              dot={{ fill: "#82ca9d", strokeWidth: 2, r: 3 }}
-              activeDot={{ r: 5, stroke: "#82ca9d", strokeWidth: 2 }}
-            />
-            <Line
-              type="monotone"
-              dataKey="ddmMarket"
-              stroke="#ffc658"
-              strokeWidth={3}
-              dot={{ fill: "#ffc658", strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: "#ffc658", strokeWidth: 2 }}
+              dot={{ fill: "#22c55e", strokeWidth: 2, r: 3 }}
+              activeDot={{ r: 5, stroke: "#22c55e", strokeWidth: 2 }}
             />
           </LineChart>
         </ResponsiveContainer>
@@ -147,7 +136,7 @@ export function PriceTrend({ data, loading }: PriceTrendProps) {
         <div className="text-xs text-muted-foreground bg-green-50 p-3 rounded-lg border border-green-200">
           <div className="font-medium text-green-800 mb-1">BUY 신호 조건 충족</div>
           <div className="text-green-700">
-            • 동대문시장가가 서울 평균 및 대형마트보다 낮음
+            • 전통시장가가 대형유통사보다 낮음
             <br />• 3일 이동평균 하락 추세
           </div>
         </div>

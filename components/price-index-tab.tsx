@@ -12,9 +12,8 @@ import Link from "next/link"
 
 interface PricePoint {
   date: string
-  seoul: number
-  mart: number
-  dongdaemun: number
+  traditionalMarket: number  // 전통시장 가격 (j_avg_price)
+  largeRetail: number        // 대형유통사 가격 (m_avg_price)
 }
 
 interface ProductData {
@@ -121,22 +120,20 @@ export function PriceIndexTab() {
     if (filteredData.length === 0) return null
 
     const latest = filteredData[filteredData.length - 1]
-    const seoulSavings = Math.round(((latest.seoul - latest.dongdaemun) / latest.seoul) * 100)
-    const martSavings = Math.round(((latest.mart - latest.dongdaemun) / latest.mart) * 100)
+    const traditionalSavings = Math.round(((latest.largeRetail - latest.traditionalMarket) / latest.largeRetail) * 100)
 
     // Calculate 3-day moving average slope for BUY signal
     const recent3Days = filteredData.slice(-3)
     let buySignal = false
     if (recent3Days.length >= 3) {
-      const slope = (recent3Days[2].dongdaemun - recent3Days[0].dongdaemun) / 2
-      buySignal = latest.dongdaemun < latest.seoul && latest.dongdaemun < latest.mart && slope < 0
+      const slope = (recent3Days[2].traditionalMarket - recent3Days[0].traditionalMarket) / 2
+      buySignal = latest.traditionalMarket < latest.largeRetail && slope < 0
     }
 
     return {
       data: filteredData,
       latest,
-      seoulSavings,
-      martSavings,
+      traditionalSavings,
       buySignal,
     }
   }
@@ -171,10 +168,7 @@ export function PriceIndexTab() {
           {productData && (
             <>
               <Badge variant="secondary" className="rounded-sm px-3 py-1 text-xs font-medium">
-                서울 기준 {productData.seoulSavings}% 절감
-              </Badge>
-              <Badge variant="secondary" className="rounded-sm px-3 py-1 text-xs font-medium">
-                마트 기준 {productData.martSavings}% 절감
+                전통시장 {productData.traditionalSavings}% 절약
               </Badge>
               {productData.buySignal && (
                 <Badge
@@ -185,7 +179,7 @@ export function PriceIndexTab() {
                   BUY 신호
                 </Badge>
               )}
-              <Link href={`/compare?item=${selectedProduct}`}>
+              <Link href={`/compare/${selectedProduct}`}>
                 <Button
                   variant="outline"
                   size="sm"
@@ -206,7 +200,7 @@ export function PriceIndexTab() {
             <div>
               <CardTitle className="text-lg font-semibold">가격지수</CardTitle>
               <CardDescription className="text-sm">
-                서울 평균가 vs 대형마트 평균가 vs 동대문 시장가 라인차트 비교
+                대형마트 가격 vs 전통시장 가격 라인차트 비교
               </CardDescription>
             </div>
             <div className="office-grid grid-cols-3 gap-0">
@@ -284,10 +278,13 @@ export function PriceIndexTab() {
                   />
                   <YAxis tick={{ fontSize: 12 }} tickFormatter={(value) => `${value.toLocaleString()}원`} />
                   <Tooltip
-                    formatter={(value: number, name: string) => [
-                      `${value.toLocaleString()}원`,
-                      name === "seoul" ? "서울 평균가" : name === "mart" ? "대형마트 평균가" : "동대문 시장가",
-                    ]}
+                    formatter={(value: number, name: string) => {
+                      const labels: Record<string, string> = {
+                        largeRetail: "대형마트",
+                        traditionalMarket: "전통시장",
+                      }
+                      return [`${value.toLocaleString()}원`, labels[name] || name]
+                    }}
                     labelFormatter={(label) => {
                       const date = new Date(label)
                       return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
@@ -295,56 +292,42 @@ export function PriceIndexTab() {
                   />
                   <Line
                     type="monotone"
-                    dataKey="seoul"
+                    dataKey="largeRetail"
                     stroke="#ef4444"
                     strokeWidth={2}
-                    name="서울 평균가"
+                    name="대형마트"
                     dot={{ r: 3 }}
                   />
                   <Line
                     type="monotone"
-                    dataKey="mart"
-                    stroke="#f97316"
-                    strokeWidth={2}
-                    name="대형마트 평균가"
-                    dot={{ r: 3 }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="dongdaemun"
+                    dataKey="traditionalMarket"
                     stroke="#22c55e"
-                    strokeWidth={3}
-                    name="동대문 시장가"
-                    dot={{ r: 4 }}
+                    strokeWidth={2}
+                    name="전통시장"
+                    dot={{ r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
             </div>
           ) : (
             <div className="office-grid grid-cols-1 gap-0">
-              <div className="office-header grid grid-cols-6 gap-0 text-xs font-medium">
-                <div className="px-3 py-2 border-r border-border">날짜</div>
-                <div className="px-3 py-2 border-r border-border text-right">서울 평균가</div>
-                <div className="px-3 py-2 border-r border-border text-right">대형마트 평균가</div>
-                <div className="px-3 py-2 border-r border-border text-right">동대문 시장가</div>
-                <div className="px-3 py-2 border-r border-border text-right">절감액 (서울)</div>
-                <div className="px-3 py-2 text-right">절감액 (마트)</div>
-              </div>
+                             <div className="office-header grid grid-cols-4 gap-0 text-xs font-medium">
+                 <div className="px-3 py-2 border-r border-border">날짜</div>
+                 <div className="px-3 py-2 border-r border-border text-right">대형마트 가격</div>
+                 <div className="px-3 py-2 border-r border-border text-right">전통시장 가격</div>
+                 <div className="px-3 py-2 text-right">절약액</div>
+               </div>
               {productData?.data.map((item, index) => (
-                <div key={index} className="grid grid-cols-6 gap-0 text-xs border-t border-border hover:bg-accent/30">
+                <div key={index} className="grid grid-cols-4 gap-0 text-xs border-t border-border hover:bg-accent/30">
                   <div className="px-3 py-2 border-r border-border">
                     {new Date(item.date).toLocaleDateString("ko-KR")}
                   </div>
-                  <div className="px-3 py-2 border-r border-border text-right">{item.seoul.toLocaleString()}원</div>
-                  <div className="px-3 py-2 border-r border-border text-right">{item.mart.toLocaleString()}원</div>
+                  <div className="px-3 py-2 border-r border-border text-right">{item.largeRetail.toLocaleString()}원</div>
                   <div className="px-3 py-2 border-r border-border text-right font-medium text-green-600">
-                    {item.dongdaemun.toLocaleString()}원
-                  </div>
-                  <div className="px-3 py-2 border-r border-border text-right text-green-600">
-                    -{(item.seoul - item.dongdaemun).toLocaleString()}원
+                    {item.traditionalMarket.toLocaleString()}원
                   </div>
                   <div className="px-3 py-2 text-right text-green-600">
-                    -{(item.mart - item.dongdaemun).toLocaleString()}원
+                    -{(item.largeRetail - item.traditionalMarket).toLocaleString()}원
                   </div>
                 </div>
               ))}
@@ -354,23 +337,17 @@ export function PriceIndexTab() {
       </Card>
 
       {productData && (
-        <div className="office-grid grid-cols-4 gap-0">
+        <div className="office-grid grid-cols-3 gap-0">
           <Card className="office-card rounded-sm">
             <CardContent className="office-header text-center px-4 py-4">
-              <div className="text-xl font-bold text-green-600">{productData.latest.dongdaemun.toLocaleString()}원</div>
-              <div className="text-xs text-muted-foreground mt-1">동대문 시장가</div>
+              <div className="text-xl font-bold text-green-600">{productData.latest.traditionalMarket.toLocaleString()}원</div>
+              <div className="text-xs text-muted-foreground mt-1">전통시장 가격</div>
             </CardContent>
           </Card>
           <Card className="office-card rounded-sm">
             <CardContent className="office-header text-center px-4 py-4">
-              <div className="text-xl font-bold text-green-600">{productData.seoulSavings}%</div>
-              <div className="text-xs text-muted-foreground mt-1">서울 기준 절감률</div>
-            </CardContent>
-          </Card>
-          <Card className="office-card rounded-sm">
-            <CardContent className="office-header text-center px-4 py-4">
-              <div className="text-xl font-bold text-green-600">{productData.martSavings}%</div>
-              <div className="text-xs text-muted-foreground mt-1">마트 기준 절감률</div>
+              <div className="text-xl font-bold text-green-600">{productData.traditionalSavings}%</div>
+              <div className="text-xs text-muted-foreground mt-1">절약률</div>
             </CardContent>
           </Card>
           <Card className="office-card rounded-sm">
@@ -383,7 +360,7 @@ export function PriceIndexTab() {
                 )}
               </div>
               <div className="text-xs text-muted-foreground mt-1">매수 신호</div>
-              <Link href={`/compare?item=${selectedProduct}`} className="block mt-2">
+              <Link href={`/compare/${selectedProduct}`} className="block mt-2">
                 <Button variant="ghost" size="sm" className="office-button rounded-sm text-xs h-6 px-2">
                   상세 비교 보기
                 </Button>

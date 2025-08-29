@@ -19,20 +19,14 @@ export async function GET(request: Request) {
     let timeCondition = "`당월_매출_금액`"; // 기본값
     if (time === "오전") timeCondition = "`시간대_06~11_매출_금액`";
     else if (time === "점심") timeCondition = "`시간대_11~14_매출_금액`";
+    else if (time === "오후") timeCondition = "`시간대_14~17_매출_금액`";
     else if (time === "저녁") timeCondition = "`시간대_17~21_매출_금액`";
-    // 추가 시간대 필요하면 else if 추가
+    else if (time === "심야") timeCondition = "`시간대_21~24_매출_금액`";
+    else if (time === "새벽") timeCondition = "`시간대_00~06_매출_금액`";
 
     // ✅ SQL 쿼리
     const [rows] = await connection.execute(
-      `
-      SELECT 상권_코드_명, 서비스_업종_코드_명, 당월_매출_금액, ${timeCondition} AS 선택시간대_매출
-      FROM cold_spots
-      WHERE (? = '전체' OR 시군구명 = ?)
-        AND (? = '전체' OR 서비스_업종_코드_명 LIKE ?)
-        AND ColdSpot = 1
-      ORDER BY ${timeCondition} ASC
-      LIMIT 5
-      `,
+      ` SELECT 상권_코드_명, 서비스_업종_코드_명, 당월_매출_금액, ${timeCondition} AS 선택시간대_매출 FROM cold_spots WHERE (? = '전체' OR 시군구명 = ?) AND (? = '전체' OR 서비스_업종_코드_명 LIKE ?) AND ColdSpot = 1 ORDER BY ${timeCondition} ASC LIMIT 5 `,
       [
         region || "전체",
         region || "전체",

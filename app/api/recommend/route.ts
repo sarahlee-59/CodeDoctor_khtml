@@ -22,7 +22,7 @@ export async function GET(request: Request) {
     const connection = await mysql.createConnection({
       host: "localhost",
       user: "root",
-      password: "0409",
+      password: "Muxchk@01033",
       database: "seoyeon_db",
     });
     console.log("✅ DB 연결 성공!");
@@ -140,5 +140,3 @@ export async function GET(request: Request) {
     );
   }
 }
-
-

@@ -3,9 +3,11 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { fetcher } from "@/lib/fetcher"
-import { MapPin, Users, Award, TrendingUp } from "lucide-react"
+import { MapPin, Users, Award, TrendingUp, Store, ShoppingCart } from "lucide-react"
+import { ProductStoreMap } from "./product-store-map"
 
 interface QualityShop {
   id: string
@@ -33,6 +35,7 @@ interface UserPreferences {
   visitDate: string
   targetGroup: string
   basketCategories: string[]
+  selectedProduct: string // 추가된 상품 선택 필드
 }
 
 export function RecommendationTab() {
@@ -43,8 +46,10 @@ export function RecommendationTab() {
     visitDate: "오늘",
     targetGroup: "혼자",
     basketCategories: [],
+    selectedProduct: "", // 추가된 상품 선택 필드
   })
   const [loading, setLoading] = useState(true)
+  const [showProductMap, setShowProductMap] = useState(false)
 
   useEffect(() => {
     const loadData = async () => {
@@ -111,6 +116,29 @@ export function RecommendationTab() {
         return "text-gray-600 bg-gray-50"
     }
   }
+
+  const handleProductSelect = (product: string) => {
+    setPreferences({ ...preferences, selectedProduct: product })
+    setShowProductMap(true)
+  }
+
+  const handleStoreSelect = (store: any) => {
+    console.log('선택된 가게:', store)
+    // 여기에 가게 선택 시 추가 로직을 구현할 수 있습니다
+  }
+
+  const popularProducts = [
+    { name: '아오리 사과', image: '/apple_aori.jpg', category: '과일' },
+    { name: '배', image: '/apple_fuji.jpg', category: '과일' },
+    { name: '마늘', image: '/garlic.jpg', category: '채소' },
+    { name: '양파', image: '/placeholder.jpg', category: '채소' },
+    { name: '감자', image: '/potato.jpg', category: '채소' },
+    { name: '당근', image: '/placeholder.jpg', category: '채소' },
+    { name: '상추', image: '/placeholder.jpg', category: '채소' },
+    { name: '배추', image: '/cabbage.jpg', category: '채소' },
+    { name: '무', image: '/radish.jpg', category: '채소' },
+    { name: '고구마', image: '/placeholder.jpg', category: '채소' }
+  ]
 
   if (loading) {
     return (
@@ -217,6 +245,74 @@ export function RecommendationTab() {
         </CardContent>
       </Card>
 
+      {/* 상품 선택 섹션 추가 */}
+      <Card className="rounded-2xl">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <ShoppingCart className="w-5 h-5" />
+            구매하고 싶은 상품 선택
+          </CardTitle>
+          <CardDescription>
+            특정 상품을 선택하면 해당 상품을 파는 가게를 지도에서 찾아드립니다
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {popularProducts.map((product) => (
+              <div
+                key={product.name}
+                className={`p-3 border rounded-lg cursor-pointer transition-all hover:shadow-md ${
+                  preferences.selectedProduct === product.name
+                    ? 'border-primary bg-primary/5'
+                    : 'border-border hover:border-primary/50'
+                }`}
+                onClick={() => handleProductSelect(product.name)}
+              >
+                <div className="text-center space-y-2">
+                  <div className="w-16 h-16 mx-auto rounded-lg overflow-hidden bg-muted">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">{product.name}</p>
+                    <p className="text-xs text-muted-foreground">{product.category}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          {preferences.selectedProduct && (
+            <div className="mt-4 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Store className="w-4 h-4 text-primary" />
+                <span className="text-sm font-medium">
+                  선택된 상품: <span className="text-primary">{preferences.selectedProduct}</span>
+                </span>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPreferences({ ...preferences, selectedProduct: "" })}
+              >
+                선택 해제
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* 상품별 가게 지도 */}
+      {showProductMap && preferences.selectedProduct && (
+        <ProductStoreMap
+          selectedProduct={preferences.selectedProduct}
+          onStoreSelect={handleStoreSelect}
+        />
+      )}
+
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold">품질 보장 집 추천</h2>
@@ -231,7 +327,7 @@ export function RecommendationTab() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-4">
-          {recommendations.map((shop, index) => (
+          {recommendations && recommendations.length > 0 ? recommendations.map((shop, index) => (
             <Card key={shop.id} className="rounded-2xl overflow-hidden hover:shadow-lg transition-all">
               <div className="flex">
                 <div className="w-32 h-32 flex-shrink-0">
@@ -277,15 +373,17 @@ export function RecommendationTab() {
 
                   <p className="text-sm text-muted-foreground mb-3">{shop.description}</p>
 
-                  <div className="flex flex-wrap gap-1 mb-3">
-                    {shop.specialties.map((specialty, idx) => (
-                      <Badge key={idx} variant="outline" className="text-xs">
-                        {specialty}
-                      </Badge>
-                    ))}
-                  </div>
+                  {shop.specialties && shop.specialties.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {shop.specialties.map((specialty, idx) => (
+                        <Badge key={idx} variant="outline" className="text-xs">
+                          {specialty}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
 
-                  {shop.benefits.length > 0 && (
+                  {shop.benefits && shop.benefits.length > 0 && (
                     <div className="space-y-1">
                       {shop.benefits.map((benefit, idx) => (
                         <div key={idx} className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
@@ -297,7 +395,16 @@ export function RecommendationTab() {
                 </div>
               </div>
             </Card>
-          ))}
+          )) : (
+            <div className="col-span-2">
+              <Card className="rounded-2xl">
+                <CardContent className="p-12 text-center">
+                  <p className="text-muted-foreground mb-4">추천 데이터를 불러오는 중입니다...</p>
+                  <p className="text-sm text-muted-foreground">잠시만 기다려주세요.</p>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
 
         <div className="space-y-4">
@@ -314,7 +421,7 @@ export function RecommendationTab() {
                 </div>
               </div>
               <div className="space-y-2">
-                {recommendations.slice(0, 3).map((shop, index) => (
+                {recommendations && recommendations.length > 0 ? recommendations.slice(0, 3).map((shop, index) => (
                   <div
                     key={shop.id}
                     className="flex items-center gap-2 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
@@ -333,7 +440,11 @@ export function RecommendationTab() {
                       {shop.currentAvailability}
                     </Badge>
                   </div>
-                ))}
+                )) : (
+                  <div className="text-center text-muted-foreground py-4">
+                    <p className="text-sm">추천 데이터가 없습니다</p>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -361,7 +472,7 @@ export function RecommendationTab() {
         </div>
       </div>
 
-      {recommendations.length === 0 && (
+      {(!recommendations || recommendations.length === 0) && (
         <Card className="rounded-2xl">
           <CardContent className="p-12 text-center">
             <p className="text-muted-foreground mb-4">조건에 맞는 품질 보장 집이 없습니다.</p>

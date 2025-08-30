@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Heart, Share, AlertTriangle, Printer, Truck } from "lucide-react"
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
 import { fetcher } from "@/lib/fetcher"
 import Image from "next/image"
 
@@ -104,7 +105,7 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
 
         const offers: Offer[] = [
           {
-            shop: "동대문종합시장",
+            shop: "전통시장",
             channel: "전통시장",
             price: priceData?.series[priceData.series.length - 1]?.traditionalMarket || 3000,
             ship: 0,
@@ -112,7 +113,7 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
             distanceKm: 2.5
           },
           {
-            shop: "이마트",
+            shop: "대형유통사",
             channel: "대형마트",
             price: priceData?.series[priceData.series.length - 1]?.largeRetail || 3500,
             ship: 0,
@@ -137,73 +138,47 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
   const formatter = new Intl.NumberFormat("ko-KR")
   const lowestOffer = getLowestOffer()
 
+  // 상품별 이미지 매핑 - public/{상품명}.jpg 형식 사용
+  const getProductImage = (productName: string) => {
+    // 상품명을 영어로 변환 (예: 호두 -> walnut)
+    const productNameMap: Record<string, string> = {
+      "배추": "cabbage",
+      "무": "radish", 
+      "사과": "apple",
+      "호두": "walnut"
+    }
+    
+    const englishName = productNameMap[productName] || productName.toLowerCase()
+    return `/${englishName}.jpg`
+  }
+
+  const getProductThumbnails = (productName: string) => {
+    const baseImage = getProductImage(productName)
+    return [
+      baseImage,
+      "/abstract-geometric-shapes.png",
+      "/abstract-geometric-shapes.png",
+      "/abstract-geometric-shapes.png",
+      "/abstract-geometric-shapes.png"
+    ]
+  }
+
   if (loading) {
     return <div className="min-h-screen bg-background flex items-center justify-center">로딩 중...</div>
   }
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="border-b bg-white">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center gap-4 text-sm">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-green-500 text-white hover:bg-green-600 px-3 py-1 h-auto text-xs"
-            >
-              전체 카테고리
-            </Button>
-            <Select defaultValue="home">
-              <SelectTrigger className="w-40 h-8 text-xs border-gray-300">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="home">컴퓨터/노트북/조립PC</SelectItem>
-                <SelectItem value="vegetables">채소류</SelectItem>
-                <SelectItem value="meat">정육류</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="cabbage">
-              <SelectTrigger className="w-32 h-8 text-xs border-gray-300">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="cabbage">배추</SelectItem>
-                <SelectItem value="radish">무</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="grade">
-              <SelectTrigger className="w-32 h-8 text-xs border-gray-300">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="grade">등급별</SelectItem>
-                <SelectItem value="premium">특급</SelectItem>
-              </SelectContent>
-            </Select>
-            <Select defaultValue="detail">
-              <SelectTrigger className="w-32 h-8 text-xs border-gray-300">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="detail">선택하세요</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-      </div>
+      
 
       <div className="bg-white border-b">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold mb-2">동대문 전통시장 {selectedItem} 1포기 특급</h1>
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs px-2 py-1 mr-2">
-                VS컴퓨터
-              </Badge>
-              <div className="text-sm text-gray-600 mt-2 leading-relaxed">
+                         <div className="flex-1">
+               <h1 className="text-2xl font-bold mb-2">동대문 전통시장 {selectedItem}</h1>
+               <div className="text-sm text-gray-600 mt-2 leading-relaxed">
                 {selectedItem} 특급 | 원산지: 국산 | 중량: 2-3kg | 등급: 특급 | 포장: 개별포장 | 보관방법: 냉장보관 |
-                유통기한: 수확 후 7일 | 농약: 무농약 | 인증: 친환경인증 | 배송: 당일배송 | 판매자: 동대문종합시장 |
+                유통기한: 수확 후 7일 | 농약: 무농약 | 인증: 친환경인증 | 배송: 당일배송 | 판매자: 전통시장 |
                 연락처: 02-123-4567 | 영업시간: 06:00-18:00 | 휴무: 일요일 | 주차: 가능 | 카드결제: 가능 | 온누리상품권:
                 사용가능 | A/S: 교환/환불 가능
               </div>
@@ -235,33 +210,33 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
           {/* Left: Product Images */}
           <div className="col-span-4">
             <div className="space-y-4">
-              <div className="aspect-square bg-white border rounded-lg overflow-hidden">
-                <Image
-                  src="/fresh-cabbage.png"
-                  alt={selectedItem}
-                  width={400}
-                  height={400}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="flex gap-2">
-                {[0, 1, 2, 3, 4].map((index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`w-16 h-16 border rounded overflow-hidden ${
-                      selectedImage === index ? "border-blue-500" : "border-gray-300"
-                    }`}
-                  >
-                    <Image
-                      src={`/abstract-geometric-shapes.png?height=64&width=64&query=${selectedItem} ${index + 1}`}
-                      alt={`${selectedItem} ${index + 1}`}
-                      width={64}
-                      height={64}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+                             <div className="aspect-square bg-white border rounded-lg overflow-hidden">
+                 <Image
+                   src={getProductThumbnails(selectedItem)[selectedImage]}
+                   alt={selectedItem}
+                   width={400}
+                   height={400}
+                   className="w-full h-full object-cover"
+                 />
+               </div>
+                             <div className="flex gap-2">
+                 {getProductThumbnails(selectedItem).map((imageSrc, index) => (
+                   <button
+                     key={index}
+                     onClick={() => setSelectedImage(index)}
+                     className={`w-16 h-16 border rounded overflow-hidden ${
+                       selectedImage === index ? "border-blue-500" : "border-gray-300"
+                     }`}
+                   >
+                     <Image
+                       src={imageSrc}
+                       alt={`${selectedItem} ${index + 1}`}
+                       width={64}
+                       height={64}
+                       className="w-full h-full object-cover"
+                     />
+                   </button>
+                 ))}
                 <button className="w-16 h-16 border border-gray-300 rounded flex items-center justify-center bg-gray-50 text-xs font-medium">
                   광고상품
                 </button>
@@ -300,10 +275,7 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
               <div className="bg-white border rounded-lg">
                 <div className="border-b px-4 py-3">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium">멤버십/카드결제 최대 혜택가</h3>
-                    <Button variant="ghost" size="sm" className="text-blue-600 text-sm">
-                      다나와 최저가보다 낮아요! ▼
-                    </Button>
+                    <h3 className="font-medium">온누리상품권 결제가</h3>
                   </div>
                 </div>
 
@@ -396,9 +368,51 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
                     <div className="text-xs text-gray-500">239몰 📊</div>
                   </div>
 
-                  {/* Simple price trend visualization */}
-                  <div className="h-32 bg-gray-50 rounded mb-3 flex items-end justify-center p-2">
-                    <div className="text-xs text-gray-500">가격 추이 차트</div>
+                  {/* Price trend chart */}
+                  <div className="h-32 mb-3">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={priceData?.series || []}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 10 }}
+                          tickFormatter={(value: string) => {
+                            const date = new Date(value)
+                            return `${date.getMonth() + 1}/${date.getDate()}`
+                          }}
+                        />
+                        <YAxis tick={{ fontSize: 10 }} tickFormatter={(value: number) => `${value.toLocaleString()}원`} />
+                        <Tooltip
+                          formatter={(value: number, name: string) => {
+                            const labels: Record<string, string> = {
+                              largeRetail: "대형유통사",
+                              traditionalMarket: "전통시장",
+                            }
+                            return [`${value.toLocaleString()}원`, labels[name] || name]
+                          }}
+                          labelFormatter={(label: string) => {
+                            const date = new Date(label)
+                            return `${date.getFullYear()}년 ${date.getMonth() + 1}월 ${date.getDate()}일`
+                          }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="largeRetail"
+                          stroke="#ef4444"
+                          strokeWidth={2}
+                          name="대형유통사"
+                          dot={{ r: 2 }}
+                        />
+                        <Line
+                          type="monotone"
+                          dataKey="traditionalMarket"
+                          stroke="#22c55e"
+                          strokeWidth={2}
+                          name="전통시장"
+                          dot={{ r: 2 }}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
                   </div>
 
                   <div className="flex justify-center gap-4 text-xs">
@@ -411,26 +425,7 @@ export function CompareView({ initialItem = "배추" }: { initialItem?: string }
                 </div>
               </Card>
 
-              {/* Related Products */}
-              <Card className="bg-white">
-                <div className="p-4">
-                  <div className="flex items-center justify-between mb-3">
-                    <h3 className="font-medium text-sm">상품의견 137건</h3>
-                    <div className="flex gap-1">
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        ‹
-                      </Button>
-                      <Button variant="ghost" size="sm" className="h-6 w-6 p-0">
-                        ›
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="space-y-2 text-xs text-gray-600">
-                    <p>• 리얼리 Vector V100 게이스에 장착 가능한가요?</p>
-                    <p>• GIGABYTE B860M DS3H 제이씨현 마이크론 186378 마이크론 Crucial P510 M.2 N...</p>
-                  </div>
-                </div>
-              </Card>
+
 
               <Card className="bg-white">
                 <div className="p-4">

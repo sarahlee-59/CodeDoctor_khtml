@@ -541,7 +541,7 @@ const CompareListingClient = ({ onProductClick }: CompareListingClientProps) => 
 
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2">
-                <span className="text-sm">온누리할인</span>
+                <span className="text-sm">온누리상품권 결제가</span>
                 <Button className="bg-blue-600 text-white text-xs px-3 py-1 rounded-sm">ON</Button>
               </div>
               <div className="flex items-center space-x-2">

@@ -45,15 +45,15 @@ interface ProductListProps {
   onProductClick?: (item: string) => void
 }
 
-// 최저가 추이 데이터 (목업 데이터)
+// 최저가 추이 데이터 (목업 데이터) - price detail 스타일 적용
 const mockPriceTrendData = [
-  { date: "2024-01-01", price: 8000, vendor: "동대문시장" },
-  { date: "2024-01-02", price: 7800, vendor: "청과물시장" },
-  { date: "2024-01-03", price: 8200, vendor: "동대문시장" },
-  { date: "2024-01-04", price: 7600, vendor: "청과물시장" },
-  { date: "2024-01-05", price: 7500, vendor: "동대문시장" },
-  { date: "2024-01-06", price: 7400, vendor: "청과물시장" },
-  { date: "2024-01-07", price: 7300, vendor: "동대문시장" },
+  { date: "2024-01-01", traditionalMarket: 8000, largeRetail: 9500 },
+  { date: "2024-01-02", traditionalMarket: 7800, largeRetail: 9200 },
+  { date: "2024-01-03", traditionalMarket: 8200, largeRetail: 9800 },
+  { date: "2024-01-04", traditionalMarket: 7600, largeRetail: 9000 },
+  { date: "2024-01-05", traditionalMarket: 7500, largeRetail: 8800 },
+  { date: "2024-01-06", traditionalMarket: 7400, largeRetail: 8700 },
+  { date: "2024-01-07", traditionalMarket: 7300, largeRetail: 8500 },
 ]
 
 export default function ProductList({
@@ -344,7 +344,7 @@ export default function ProductList({
               전체 ({products.length.toLocaleString()})
             </button>
             <button className="px-4 py-3 text-gray-600 hover:text-gray-900">가격비교 (953)</button>
-            <button className="px-4 py-3 text-gray-600 hover:text-gray-900">컵셀 상품 (73,082)</button>
+            <button className="px-4 py-3 text-gray-600 hover:text-gray-900">특가 상품 (73,082)</button>
           </div>
 
           <div className="flex items-center justify-between p-4 bg-gray-50">
@@ -497,7 +497,8 @@ export default function ProductList({
                   <Tooltip
                     formatter={(value: number, name: string) => {
                       const labels: Record<string, string> = {
-                        price: "최저가",
+                        largeRetail: "대형유통사",
+                        traditionalMarket: "전통시장",
                       }
                       return [`${value.toLocaleString()}원`, labels[name] || name]
                     }}
@@ -508,10 +509,18 @@ export default function ProductList({
                   />
                   <Line
                     type="monotone"
-                    dataKey="price"
+                    dataKey="largeRetail"
+                    stroke="#ef4444"
+                    strokeWidth={2}
+                    name="대형유통사"
+                    dot={{ r: 3 }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="traditionalMarket"
                     stroke="#22c55e"
                     strokeWidth={2}
-                    name="최저가"
+                    name="전통시장"
                     dot={{ r: 3 }}
                   />
                 </LineChart>
@@ -522,11 +531,11 @@ export default function ProductList({
             <div className="mt-4 p-3 bg-green-50 rounded-lg">
               <div className="text-center">
                 <div className="text-2xl font-bold text-green-600">
-                  {Math.min(...mockPriceTrendData.map((d: any) => d.price)).toLocaleString()}원
+                  {Math.min(...mockPriceTrendData.map((d: any) => Math.min(d.traditionalMarket, d.largeRetail))).toLocaleString()}원
                 </div>
                 <div className="text-sm text-green-600 mt-1">최저가</div>
                 <div className="text-xs text-gray-500 mt-1">
-                  {mockPriceTrendData.find((d: any) => d.price === Math.min(...mockPriceTrendData.map((d: any) => d.price)))?.vendor}
+                  전통시장
                 </div>
               </div>
             </div>
